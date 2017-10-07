@@ -1,0 +1,679 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+* {
+  margin:0px;
+  padding:0px;
+  box-sizing:border-box;
+  font-family:"Roboto",sans-serif;
+  font-size:15px;
+}
+/* ::-webkit-scrollbar { 
+    display: none; 
+} */
+/**
+ * Body CSS
+ */
+
+html,
+body {
+  height: 100%;
+  background-color: #eee;
+}
+
+html,
+body,
+input,
+textarea,
+buttons {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+}
+
+.no-padding {
+  padding: 0px;
+}
+/**
+ * Layout CSS
+ */
+
+#header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
+  transition: left 0.2s;
+}
+.mui-appbar,.mui--appbar-line-height {
+  line-height: 50px;
+  min-height: 50px;
+}
+#sidedrawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  left: -200px;
+  overflow: auto;
+  z-index: 2;
+  background-color: #fff;
+  transition: transform 0.2s;
+}
+
+#content-wrapper {
+  min-height: 100%;
+  overflow-x: hidden;
+  margin-left: 0px;
+  transition: margin-left 0.2s;
+  
+  /* sticky bottom */
+  box-sizing: border-box;
+  margin-bottom: -160px;
+  padding-bottom: 160px;
+}
+
+#footer {
+  box-sizing: border-box;
+  height: 160px;
+  margin-left: 0px;
+  transition: margin-left 0.2s;
+}
+
+@media (min-width: 768px) {
+  #header {
+    left: 200px;
+  }
+  
+  #sidedrawer {
+    transform: translate(200px);
+  }
+  
+  #content-wrapper {
+    margin-left: 200px;
+  }
+  
+  #footer {
+    margin-left: 200px;
+  }
+  
+  body.hide-sidedrawer #header {
+    left: 0;
+  }
+  
+  body.hide-sidedrawer #sidedrawer {
+    transform: translate(0px);
+  }
+  
+  body.hide-sidedrawer #content-wrapper {
+    margin-left: 0;
+  }
+  
+  body.hide-sidedrawer #footer {
+    margin-left: 0;
+  }
+}
+
+
+/**
+ * Toggle Sidedrawer
+ */
+#sidedrawer.active {
+  transform: translate(200px);
+}
+
+
+/**
+ * Header CSS
+ */
+
+.sidedrawer-toggle {
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+  margin-right: 10px;
+}
+
+.sidedrawer-toggle:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+
+/**
+ * Sidedrawer CSS
+ */
+
+#sidedrawer-brand {
+  padding-left: 20px;
+  background: #2196F3;
+  color:#fff;
+}
+
+#sidedrawer ul {
+  list-style: none;
+}
+
+#sidedrawer > ul {
+  padding-left: 0px;
+}
+
+#sidedrawer > ul > li:first-child {
+  padding-top: 0px;
+}
+
+#sidedrawer strong {
+  display: block;
+  padding: 12px 15px;
+  cursor: pointer;
+  font-weight: 400;
+}
+#sidedrawer > ul > li {
+  border-bottom: 1px solid #ddd;
+}
+
+#sidedrawer strong:hover {
+  background-color: #E0E0E0;
+}
+
+#sidedrawer strong + ul > li {
+  padding: 6px 0px;
+}
+
+
+/**
+ * Footer CSS
+ */
+
+#footer {
+  background-color: #0288D1;
+  color: #fff;
+}
+
+#footer a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+
+#startRec {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform:translateX(-50%);
+  width: 50px;
+  height: 50px;
+  border:2px solid red;
+}
+
+
+#startRec {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform:translateX(-50%);
+  width: 55px;
+  height: 55px;
+  border:0px solid red;
+  border-radius: 50%;
+  transition:all 300ms linear;
+  background: url("../asset/mic.png") center no-repeat;
+  background-size: cover;
+}
+#recLoading {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    height: 0px;
+    background: #fff;
+    transition:all 350ms ease;
+    overflow: hidden;
+}
+#recLoading.active {
+    height: 100px;
+}
+#startRec.up {
+    bottom: -70px;
+}
+#recMain.active > #startRec {
+    
+}
+#recMain.active > #recLoading {
+    
+}
+
+#main.active:before  {
+    content:"";
+    position:fixed;
+    top:0px;
+    left: 0px;
+    right: 0px;
+    width: 100vw;
+    height: calc(100vh - 100px);
+    transition:all 200ms ease-in-out;
+    z-index:10000;
+    background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6));
+}
+#main.active #recMain > #startRec{
+    bottom: -30px;
+}
+#main.active #recMain > #recLoading{
+    height: 100px;
+}
+
+#mainConvo {
+    padding: 8px;
+    padding-top: 20px;
+}
+#mainConvo .q {
+    height: content-height;
+    padding: 10px;
+    background: #ddd;
+    font-size: 15px;
+}
+#mainConvo .ans {
+    margin-top:65px;
+    height: content-height;
+    padding: 10px;
+    background: #fff;
+    font-size: 15px;    
+    transition:margin 400ms linear;
+}
+#mainConvo .ans.show {
+    margin-top: 15px;
+}
+
+
+#mainConvo .ans.wikiSearch .heading {
+   font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;   
+}
+#mainConvo .ans.wikiSearch .infodata {
+    color:#555;
+}
+
+#mainConvo .ans.youtube {
+    padding: 0px;
+}
+#mainConvo .ans.youtube iframe {
+    width: 100%;
+    height: 180px;
+    outline: none;
+    border: none;
+}
+#mainConvo .ans.youtube .infodata {
+    padding: 10px;
+}
+#mainConvo .ans.youtube .infodata .heading {
+    margin-bottom:5px;
+    font-weight: 600;
+}
+#mainConvo .ans.youtube .infodata .desc {
+    color:#777;
+}
+
+#mainConvo .ans.ram #raminfocircle > div {
+    width: 50%;
+    float:left;
+    text-align: center;
+}
+#mainConvo .ans.ram #raminfocircle:after {
+    content:"";
+    display: table;
+    clear: both;
+}
+#mainConvo .ans.ram #raminfocircle #avram:after {
+    content:"Available RAM";
+    font-size: 16px;
+    padding:10px 5px;
+    border-top:1px solid #ddd;
+    color:#555;
+}
+#mainConvo .ans.ram #raminfocircle #usram:after {
+    content:"Consuming RAM";
+    font-size: 16px;
+    padding:10px 5px;
+    border-top:1px solid #ddd;
+    color:#555;
+}
+#mainConvo .ans.ram {
+    position: relative;
+    padding: 0px;
+    padding-top:0px;
+}
+
+#mainConvo .ans.ram .list {
+    margin-top: 0px;
+    padding: 0px;
+}
+#mainConvo .ans.ram .list .item-divider {
+    padding: 8px 8px;
+    background: #00acee;
+    color:#fff;
+}
+#mainConvo .ans.ram .list .item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    display: block;
+}
+#mainConvo .ans.ram .list .item:after {
+    content:"";
+    display: table;
+    clear: both;
+}
+#mainConvo .ans.ram .list .item > div {
+    display: inline-block;
+    padding: 5px 5px;
+    font-size: 15px;
+}
+#mainConvo .ans.ram .list .item > div:nth-child(1) {
+    float:left;
+}
+#mainConvo .ans.ram .list .item > div:nth-child(2) {
+    float:right;
+}
+
+.html {
+  top: 50px;
+  left: 45px;
+}
+
+.chart {
+  position: relative;
+  display: inline-block;
+  color: #999;
+  font-size: 20px;
+  text-align: center;
+}
+
+.chart figcaption {
+  padding: 50px 25px;
+  width: 100px;
+  height: 50px;
+  border: 20px solid #f0f0f0;
+  border-radius: 100px;
+  line-height: 50px;
+}
+.html + svg .outer {
+  stroke: #e34f26;
+}
+
+.chart svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.outer {
+  fill: transparent;
+  stroke: #333;
+  stroke-width: 20;
+  stroke-dasharray: 534;
+  transition: stroke-dashoffset 1s;
+  -webkit-animation-play-state: running;
+  
+  /* firefox bug fix - won't rotate at 90deg angles */
+  -moz-transform: rotate(-89deg) translateX(-190px);
+}
+
+.chart:hover .outer {
+  stroke-dashoffset: 534 !important;
+  -webkit-animation-play-state: paused;
+}
+/* END Circle colors and graphic positions */
+
+
+/* Set the initial values for the animation */
+.chart[data-percent='100'] .outer {
+  stroke-dashoffset: 0;
+  -webkit-animation: show100 2s;
+  animation: show100 2s;
+}
+
+.chart[data-percent='75'] .outer {
+  stroke-dashoffset: 133;
+  -webkit-animation: show75 2s;
+  animation: show75 2s;
+}
+
+.chart[data-percent='50'] .outer {
+  stroke-dashoffset: 267;
+  -webkit-animation: show50 2s;
+  animation: show50 2s;
+}
+
+.chart[data-percent='25'] .outer {
+  stroke-dashoffset: 401;
+  -webkit-animation: show25 2s;
+  animation: show25 2s;
+}
+/* END set initial animation values */
+
+/* Keyframes for the initial animation */
+@-webkit-keyframes show100 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes show100 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@-webkit-keyframes show75 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 134;
+  }
+}
+
+@keyframes show75 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 124;
+  }
+}
+
+@-webkit-keyframes show50 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 267;
+  }
+}
+
+@keyframes show50 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 267;
+  }
+}
+
+@-webkit-keyframes show25 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 401;
+  }
+}
+
+@keyframes show25 {
+  from {
+    stroke-dashoffset: 537;
+  }
+  
+  to {
+    stroke-dashoffset: 401;
+  }
+}
+.progress-meter text {
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+
+.bubbles-wrapper {
+    position: absolute;
+    top: 52%;
+    width: 100%;
+    text-align: center;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+    z-index: 1;
+}
+.bubbles {
+    position: relative;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    margin: auto;
+    border-radius: 100%;
+    -webkit-animation-name: scale;
+            animation-name: scale;
+    -webkit-animation-duration: 1.7s;
+            animation-duration: 1.7s;
+    -webkit-animation-timing-function: cubic-bezier(.42, 0, .58, 1);
+            animation-timing-function: cubic-bezier(.42, 0, .58, 1);
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+}
+#b1 {
+    background-color: #8861A4;
+}
+#b2 {
+    background-color: #2495C1;
+    -webkit-animation-delay: 100ms;
+            animation-delay: 100ms;
+}
+#b3 {
+    background-color: #48BB6D;
+    -webkit-animation-delay: 200ms;
+            animation-delay: 200ms;
+}
+#b4 {
+    background-color: #F1C500;
+    -webkit-animation-delay: 300ms;
+            animation-delay: 300ms;
+}
+#b5 {
+    background-color: #F35957;
+    -webkit-animation-delay: 400ms;
+            animation-delay: 400ms;
+}
+@-webkit-keyframes scale {
+    0% {-webkit-transform: translateY(-50%) scale(0.2);transform: translateY(-50%) scale(0.2);}
+    50% {-webkit-transform: translateY(50%) scale(1.2);transform: translateY(50%) scale(1.2);}
+    100% {-webkit-transform: translateY(-50%) scale(0.2);transform: translateY(-50%) scale(0.2);}
+}
+@keyframes scale {
+    0% {-webkit-transform: translateY(-50%) scale(0.2);transform: translateY(-50%) scale(0.2);}
+    50% {-webkit-transform: translateY(50%) scale(1.2);transform: translateY(50%) scale(1.2);}
+    100% {-webkit-transform: translateY(-50%) scale(0.2);transform: translateY(-50%) scale(0.2);}
+}
+
+
+.ans.weather {
+    padding: 0px !important;
+}
+.ans.weather .title {
+    height: 45px;
+    line-height: 45px;
+    padding-left: 8px;
+    font-size: 16px;
+    color:#fff;
+    background: #00acee;
+}
+.ans.weather .logo_temp {
+    padding: 10px 15px;
+}
+.ans.weather .logo_temp div.logo {
+    width: 50px;
+    height: 50px;
+    background: red;
+    float: left;
+    margin-top: 15px;
+    margin-left: 20px;
+}
+.ans.weather .logo_temp div.temp {
+    height: 80px;
+    text-align: center;
+    font-size: 65px;
+    line-height: 80px;    
+}
+.ans.weather .logo_temp div.temp sup {
+    font-size: 25px;
+    position:relative;
+    top:-35px;
+}
+#mainConvo .ans.weather .list {
+    margin-top: 0px;
+    padding: 0px;
+}
+#mainConvo .ans.weather .list .item-divider {
+    padding: 8px 8px;
+    background: #00acee;
+    color:#fff;
+}
+#mainConvo .ans.weather .list .item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    display: block;
+}
+#mainConvo .ans.weather .list .item:after {
+    content:"";
+    display: table;
+    clear: both;
+}
+#mainConvo .ans.weather .list .item > div {
+    display: inline-block;
+    padding: 5px 5px;
+    font-size: 15px;
+}
+#mainConvo .ans.weather .list .item > div:nth-child(1) {
+    float:left;
+}
+#mainConvo .ans.weather .list .item > div:nth-child(2) {
+    float:right;
+}
+hr {
+  margin:0px;
+}
+.schtb tr {
+}
+.schtb tr td {
+  padding: 6px 8px;
+}
+.schtb tr:nth-child(odd) {
+  background: #ccc;
+}
+.schtb tr:nth-child(even) {
+  background: #f5f7fa;
+}

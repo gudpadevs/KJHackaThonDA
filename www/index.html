@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+	    <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="./mui.min.css" rel="stylesheet" type="text/css" />
+        <script src="./mui.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script> -->
+        <script src="./angular.min.js"></script>
+        <script src="./angular-route.js"></script>
+        <script type="text/javascript" src="./d3.min.js"></script>
+        <!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
+        <script type="text/javascript" src="./jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKXmoWFUpatHjizC9XUxjD571Hs8CGd6c&libraries=places&callback=" async defer></script>
+        <script type="text/javascript" src="cordova.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="styles/style.css"/>
+</head>
+<body>
+
+
+
+  <body ng-app="myApp">
+
+<div id="placemap" style="display:none;"></div>
+
+    <div id="sidedrawer" class="mui--no-user-select">
+      <div id="sidedrawer-brand" class="mui--appbar-line-height">
+        <span class="mui--text-title">My Assistant</span>
+      </div>
+      <div class="mui-divider"></div>
+      <ul>
+        <li id="schtab">
+          <strong>Schedule</strong>
+        </li>
+      </ul>
+    </div>
+    <header id="header">
+      <div class="mui-appbar mui--appbar-line-height">
+        <div class="mui-container-fluid">
+          <a class="sidedrawer-toggle mui--visible-xs-inline-block mui--visible-sm-inline-block js-show-sidedrawer">☰</a>
+          <a class="sidedrawer-toggle mui--hidden-xs mui--hidden-sm js-hide-sidedrawer">☰</a>
+          <span class="mui--text-title mui--visible-xs-inline-block mui--visible-sm-inline-block">Life</span>
+        </div>
+      </div>
+    </header>
+    <div id="content-wrapper" >
+      <div class="mui--appbar-height" style="height:50px;"></div>
+      <div class="mui-container-fluid no-padding">
+        <div class="no-styles" ng-view></div>
+      </div>
+    </div>
+
+<script>
+	var s = new Date();
+		var dt = s.toDateString();
+	if(window.localStorage.schedule3 == undefined) {
+			var sch = {
+				"time":dt,
+				"lists":[]
+			};
+			window.localStorage.setItem("schedule3",JSON.stringify(sch)); 			
+	} else {
+			var oo = JSON.parse(window.localStorage.schedule3);
+			console.log(oo);
+			if(oo.time != dt) {
+				var sch = {
+					"time":dt,
+					"lists":[]
+				};
+				window.localStorage.setItem("schedule3",JSON.stringify(sch)); 			
+			}		
+	}
+
+	setInterval(function(){
+		var cud = new Date();
+		if(cud.getHours()<10)
+		var cudt = "0"+cud.getHours()+":"+cud.getMinutes();
+		else 
+		var cudt = cud.getHours()+":"+cud.getMinutes();
+		var schdar = JSON.parse(window.localStorage.schedule3);
+		if(schdar.lists.length > 0) {
+			for(var i=0;i<schdar.lists.length;i++){
+				if(schdar.lists[i].time == undefined || schdar.lists[i].time == null || schdar.lists[i].time == "") {
+					continue;
+				}
+				if(schdar.lists[i].time == cudt) {
+				console.log("--");
+					tts(schdar.lists[i].msg);
+					break;
+				}
+			}
+		}
+	},60000);
+var app = angular.module("myApp", ["ngRoute"]);
+app.config(function($routeProvider) {
+    $routeProvider
+    .when("/", {
+        templateUrl : "main.htm",
+        controller:"mainPage"
+    })
+    .when("/schedule", {
+        templateUrl : "schedule.htm"
+    })
+    .when("/green", {
+        templateUrl : "green.htm"
+    })
+    .when("/blue", {
+        templateUrl : "blue.htm"
+    })
+    .otherwise({
+        template : "<h1>None</h1><p>Nothing has been selected</p>"
+    });
+});
+app.controller('mainPage',function($scope){
+	//alert('aa');
+	    var didScroll;
+	    var lastScrollTop = 0;
+	    var delta = 5;
+	    var navbarHeight = $('#startRec').outerHeight();
+	    $(window).scroll(function(event){
+	        didScroll = true;
+	    });
+	    setInterval(function() {
+	        if (didScroll) {
+	            hasScrolled();
+	            didScroll = false;
+	        }
+	    }, 250);
+	    function hasScrolled() {
+	        var st = $(this).scrollTop();
+	        
+	        if(Math.abs(lastScrollTop - st) <= delta)
+	            return;
+	        
+	        if (st > lastScrollTop && st > navbarHeight){
+	            $('#startRec').removeClass('down').addClass('up');
+	        } else {
+	            if(st + $(window).height() < $(document).height()) {
+	                $('#startRec').removeClass('up').addClass('down');
+	            }
+	        }
+	        
+	        lastScrollTop = st;
+	    }
+	    $('#startRec').on('click',function(){
+	        //alert("--");
+	    startSpeechRecongition(document.getElementById("main"));
+	    });	
+})
+app.controller('scheduleCtrl',function($scope){
+	$scope.schtime = "";
+	$scope.schmsg = "";
+	if(window.localStorage.schedule3 == undefined) {
+		var mainObj;
+		$scope.gbsch = [];	
+	} else {
+		var mainObj = JSON.parse(window.localStorage.schedule3);
+		$scope.gbsch = mainObj.lists;
+	}
+	$scope.addToSch = function(){
+		var s = new Date();
+		var dt = s.toDateString();
+			var schup = JSON.parse(window.localStorage.schedule3);
+			var msg = $scope.schmsg;
+			if(msg.length < 2) {
+				return;
+			}
+			var schtime = document.getElementById("timeschld").value;
+			schup.lists.push({
+				"time":schtime,
+				"msg":msg
+			});		
+			$scope.gbsch = schup.lists;	
+			mainObj = schup;
+			window.localStorage.setItem("schedule3",JSON.stringify(schup)); 
+	}
+});
+</script>
+
+    <script type="text/ng-template" id="main.htm">
+    <div id="main">
+      <div id="conversation">
+        <div id="mainConvo">
+          <div class="q">
+            Welcome...
+          </div>
+        </div>
+      </div>
+      <div id="recMain">
+        <div id="startRec"></div>
+        <div id="recLoading">
+            <div class="loading">
+                <div class="bubbles-wrapper">
+                    <div class="bubbles" id="b1">&nbsp</div>
+                    <div class="bubbles" id="b2">&nbsp</div>
+                    <div class="bubbles" id="b3">&nbsp</div>
+                    <div class="bubbles" id="b4">&nbsp</div>
+                    <div class="bubbles" id="b5">&nbsp</div>
+              </div>      
+            </div>            
+        </div>
+      </div>
+      </div>
+    </script>  
+<script type="text/ng-template" id="schedule.htm">
+	<div ng-controller="scheduleCtrl">
+		<div class="adjs" style="display:flex;height:40px">
+		<input type="time" ng-model="schtime" id="timeschld" placeholder="Time" style="width:100%" />
+		<input type="text" ng-model="schmsg" style="flex:1" placeholder="Message" style="width:100%" />
+		</div>
+		<button style="width:100%;height:40px;background:#2196f3;border:1px solid #ddd;color:#fff" ng-click="addToSch()">Add</button>
+		<hr>
+		<table class="schtb" style="width:100%">
+			<tr ng-repeat="item in gbsch">
+				<td>{{item.time}}</td>
+				<td>{{item.msg}}</td>
+			</tr>
+		</table>
+	</div>
+</script>    
+
+<script type="text/javascript" src="scripts/script.js"></script>
+</body>
+</html>
